@@ -250,7 +250,7 @@ async def handle_premium_purchase(update: Update, context: ContextTypes.DEFAULT_
 
     await context.bot.send_invoice(
         chat_id=chat_id,
-        title="FlirtZone Premium ⭐",
+        title="Vibey Premium ⭐",
         description=(
             "✅ לייקים ללא הגבלה\n"
             "✅ הפרופיל מופיע ראשון\n"
@@ -261,7 +261,7 @@ async def handle_premium_purchase(update: Update, context: ContextTypes.DEFAULT_
         ),
         payload="premium_monthly",
         currency="XTR",
-        prices=[LabeledPrice("FlirtZone Premium - חודש", PREMIUM_PRICE_STARS)]
+        prices=[LabeledPrice("Vibey Premium - חודש", PREMIUM_PRICE_STARS)]
     )
 
 
