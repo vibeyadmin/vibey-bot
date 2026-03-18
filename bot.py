@@ -588,6 +588,14 @@ async def menu_command(update, context):
 def _run_web_admin():
     """Run web admin in background - safe, won't affect bot if it fails."""
     try:
+        import web_admin as _wa
+        import os as _os
+        port = int(_os.environ.get("PORT", _os.environ.get("WEB_PORT", "5000")))
+        _wa.app.run(host="0.0.0.0", port=port, debug=False, use_reloader=False)
+        return
+    except Exception:
+        pass
+    try:
         import os as _os
         db_path = _os.environ.get("DB_PATH", "dating_bot.db")
         admin_pass = _os.environ.get("ADMIN_WEB_PASSWORD", "admin123")
