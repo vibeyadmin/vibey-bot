@@ -68,7 +68,7 @@ async def handle_menu_callbacks(update, context):
         track_premium_interest(user_id)
         if lang == "he":
             text = (
-                "⭐ *FlirtZone Premium*\n\n"
+                "⭐ *Vibey Premium*\n\n"
                 "✅ לייקים ללא הגבלה\n"
                 "✅ הפרופיל מופיע ראשון\n"
                 "✅ שלח הודעה עם כל לייק\n"
@@ -78,7 +78,7 @@ async def handle_menu_callbacks(update, context):
             )
         else:
             text = (
-                "⭐ *FlirtZone Premium*\n\n"
+                "⭐ *Vibey Premium*\n\n"
                 "✅ Unlimited likes\n"
                 "✅ Profile shown first\n"
                 "✅ Send message with every like\n"
@@ -328,9 +328,9 @@ async def handle_delete_confirm(update, context):
     if query.data == "confirm_delete":
         delete_user_self(user_id)
         msg = (
-            "🗑 *החשבון נמחק*\n\nתודה שהיית חלק מ-FlirtZone! 💋\nכדי להצטרף שוב: /start"
+            "🗑 *החשבון נמחק*\n\nתודה שהיית חלק מ-Vibey! 💋\nכדי להצטרף שוב: /start"
             if lang == "he" else
-            "🗑 *Account deleted*\n\nThank you for being part of FlirtZone! 💋\nTo rejoin: /start"
+            "🗑 *Account deleted*\n\nThank you for being part of Vibey! 💋\nTo rejoin: /start"
         )
         await query.edit_message_text(msg, parse_mode="Markdown")
     else:
@@ -416,7 +416,7 @@ async def handle_message(update, context):
             try:
                 await context.bot.send_message(
                     chat_id=target_uid,
-                    text=f"📨 *הודעה מהנהלת FlirtZone:*\n\n{update.message.text}",
+                    text=f"📨 *הודעה מהנהלת Vibey:*\n\n{update.message.text}",
                     parse_mode="Markdown"
                 )
                 await update.message.reply_text("✅ נשלח!")
@@ -591,7 +591,7 @@ def _run_web_admin():
         import os as _os
         db_path = _os.environ.get("DB_PATH", "dating_bot.db")
         admin_pass = _os.environ.get("ADMIN_WEB_PASSWORD", "admin123")
-        secret = _os.environ.get("WEB_SECRET_KEY", "flirtzonesecret")
+        secret = _os.environ.get("WEB_SECRET_KEY", "vibeysecret")
         port = int(_os.environ.get("PORT", _os.environ.get("WEB_PORT", "5000")))
 
         if not FLASK_OK:
@@ -668,7 +668,7 @@ td{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:.8
             ps = {"home":"","users":"","pending":"","reports":"","messages":""}
             ps[p] = "active"
             return f"""{BASE}<nav><div class="ni">
-<a href="/" class="nl">💋 FlirtZone Admin</a>
+<a href="/" class="nl">💋 Vibey Admin</a>
 <div class="na">
 <a href="/" class="{ps["home"]}">🏠 ראשי</a>
 <a href="/users" class="{ps["users"]}">👥 משתמשים</a>
@@ -689,7 +689,7 @@ td{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:.8
             return f"""{BASE}<div style="display:flex;align-items:center;justify-content:center;min-height:100vh">
 <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(233,30,140,0.2);border-radius:24px;padding:56px 48px;width:380px;text-align:center">
 <div style="font-size:3rem;margin-bottom:8px">💋</div>
-<h1 style="font-size:2rem;font-weight:900;margin-bottom:4px">FlirtZone</h1>
+<h1 style="font-size:2rem;font-weight:900;margin-bottom:4px">Vibey</h1>
 <p style="color:rgba(255,255,255,0.4);margin-bottom:36px">פאנל ניהול</p>
 <form method="POST">
 <input type="password" name="password" placeholder="סיסמה" autofocus style="width:100%;padding:14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#fff;font-size:1rem;margin-bottom:14px;outline:none;text-align:center;font-family:inherit">
@@ -959,7 +959,7 @@ def main():
     # Start web admin in background thread - safe, won't affect bot
     web_thread = threading.Thread(target=_run_web_admin, daemon=True)
     web_thread.start()
-    logger.info("FlirtZone Bot + Web Admin started!")
+    logger.info("Vibey Bot + Web Admin started!")
     app.run_polling(drop_pending_updates=True)
 
 
