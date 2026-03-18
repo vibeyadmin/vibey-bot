@@ -54,7 +54,7 @@ async def send_main_menu(context, chat_id):
          InlineKeyboardButton(tx["report"], callback_data="menu_report")],
         [InlineKeyboardButton(tx["bug"], callback_data="menu_bug")]
     ]
-    title = "💋 *FlirtZone*"
+    title = "💋 *Vibey*"
     subtitle = "בחר/י פעולה:" if lang == "he" else "Choose an action:"
     await context.bot.send_message(
         chat_id=chat_id,
@@ -119,7 +119,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         try:
             await context.bot.send_message(
                 chat_id=admin_id,
-                text=f"👋 *משתמש/ת חדש/ה התחיל/ה להירשם ל-FlirtZone!*\n\n👤 {full}\n📱 {un}\n🆔 `{update.effective_user.id}`",
+                text=f"👋 *משתמש/ת חדש/ה התחיל/ה להירשם ל-Vibey!*\n\n👤 {full}\n📱 {un}\n🆔 `{update.effective_user.id}`",
                 parse_mode="Markdown"
             )
         except Exception:
@@ -131,10 +131,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [InlineKeyboardButton("👨 גבר / Man", callback_data="gender_male")]
     ]
     await update.message.reply_text(
-        "💋 *ברוכים הבאים ל-FlirtZone!*\n"
-        "_Welcome to FlirtZone!_\n\n"
-        "🇮🇱 פלטפורמת היכרויות לקשר קליל ולא מחייב לכל מי שמעל גיל 18.\n\n"
-        "🇬🇧 A casual, no-strings-attached dating platform open to all adults (18+).\n\n"
+        "💋 *ברוכים הבאים ל-Vibey!*\n"
+        "_Welcome to Vibey!_\n\n"
+        "🇮🇱 פלטפורמת היכרויות לקשר קליל ולא מחייב. 18+\n\n"
+        "🇬🇧 A casual, no-strings-attached dating platform. 18+\n\n"
         "בחר/י מגדר | *Select your gender:*",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(keyboard)
@@ -179,7 +179,7 @@ async def get_age(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if age < 18:
         await update.message.reply_text(
-            "❌ *הבוט מיועד למבוגרים מעל גיל 18 בלבד.*\n_This platform is for adults 18+ only._",
+            "❌ *הבוט מיועד ל-18+ בלבד.*\n_This platform is for 18+ only._",
             parse_mode="Markdown"
         )
         return ConversationHandler.END
@@ -347,7 +347,7 @@ async def get_id_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
         tg_username = f"@{update.effective_user.username}" if update.effective_user.username else "אין שם משתמש"
         tg_name = update.effective_user.full_name or ""
         caption = (
-            f"📋 *בקשת הרשמה - FlirtZone*\n\n"
+            f"📋 *בקשת הרשמה - Vibey*\n\n"
             f"👤 {data['name']}, גיל {data['age']}\n"
             f"📍 {region_name} - {data['city']} | {gender_text}\n"
             f"📝 {data['bio']}\n"
