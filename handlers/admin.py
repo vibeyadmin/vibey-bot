@@ -52,7 +52,7 @@ async def admin_panel(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [InlineKeyboardButton("📊 סטטיסטיקות", callback_data="appeal_stats")]
     ]
     await update.message.reply_text(
-        f"🛡️ *פאנל ניהול FlirtZone*\n\n"
+        f"🛡️ *פאנל ניהול Vibey*\n\n"
         f"👥 סה\"כ: {stats['total']} | ⏳ ממתינים: {stats['pending']}\n"
         f"✅ מאושרים: {stats['approved']} | 🚫 חסומים: {stats['blocked']}\n"
         f"⏸ מושעים: {stats['suspended']} | ⭐ פרמיום: {stats['premium']}\n"
@@ -165,7 +165,7 @@ async def handle_admin_callback(update: Update, context: ContextTypes.DEFAULT_TY
         )
         await context.bot.send_message(
             chat_id=uid,
-            text="💬 *הנהלת FlirtZone פתחה איתך שיחה*\n\nתוכל/י לשלוח הודעה ולקבל תשובה.",
+            text="💬 *הנהלת Vibey פתחה איתך שיחה*\n\nתוכל/י לשלוח הודעה ולקבל תשובה.",
             parse_mode="Markdown"
         )
         return
@@ -306,7 +306,7 @@ async def handle_admin_callback(update: Update, context: ContextTypes.DEFAULT_TY
         bonus_msg = f"\n\n🎁 יש לך {user['bonus_likes']} לייקים בונוס!" if user and user["bonus_likes"] > 0 else ""
         await context.bot.send_message(
             chat_id=uid,
-            text="✅ *פרופילך אושר! Your profile is approved!*\n\n💋 ברוך הבא ל-FlirtZone!\n\n" + RULES_TEXT + bonus_msg,
+            text="✅ *פרופילך אושר! Your profile is approved!*\n\n💋 ברוך הבא ל-Vibey!\n\n" + RULES_TEXT + bonus_msg,
             parse_mode="Markdown"
         )
         await _send_main_menu(context, uid)
@@ -587,7 +587,7 @@ async def _send_main_menu(context, chat_id):
         [InlineKeyboardButton("🗑 מחק חשבון | Delete", callback_data="menu_delete")]
     ]
     await context.bot.send_message(chat_id=chat_id,
-        text="💋 *FlirtZone - תפריט ראשי | Main Menu*\n\nבחר/י פעולה:",
+        text="💋 *Vibey - תפריט ראשי | Main Menu*\n\nבחר/י פעולה:",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(keyboard))
 
@@ -643,7 +643,7 @@ async def handle_appeal_message(update: Update, context: ContextTypes.DEFAULT_TY
                 WAITING_MESSAGE_USER.pop(user_id)
                 try:
                     await context.bot.send_message(chat_id=target_id,
-                        text=f"📨 *הודעה מהנהלת FlirtZone:*\n\n{message_text}", parse_mode="Markdown")
+                        text=f"📨 *הודעה מהנהלת Vibey:*\n\n{message_text}", parse_mode="Markdown")
                     await update.message.reply_text("✅ נשלח!")
                 except Exception:
                     await update.message.reply_text("❌ לא ניתן לשלוח.")
@@ -708,7 +708,7 @@ async def handle_appeal_message(update: Update, context: ContextTypes.DEFAULT_TY
                         try:
                             await context.bot.send_message(
                                 chat_id=u["user_id"],
-                                text=f"⭐ *מתנה מהנהלת FlirtZone!*\n\nקיבלת פרמיום חינם ל-{days} ימים! 🎉\n\n✅ לייקים ללא הגבלה\n✅ הפרופיל מופיע ראשון\n\n⏰ עד: {until.strftime('%d/%m/%Y')}",
+                                text=f"⭐ *מתנה מהנהלת Vibey!*\n\nקיבלת פרמיום חינם ל-{days} ימים! 🎉\n\n✅ לייקים ללא הגבלה\n✅ הפרופיל מופיע ראשון\n\n⏰ עד: {until.strftime('%d/%m/%Y')}",
                                 parse_mode="Markdown"
                             )
                         except Exception:
