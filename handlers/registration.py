@@ -133,7 +133,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "💋 *ברוכים הבאים ל-FlirtZone!*\n"
         "_Welcome to FlirtZone!_\n\n"
-        "🇮🇱 פלטפורמת היכרויות לקשר קליל ולא מחייב לכל מי שמעל גיל 18.\n\n"
+        "🇮🇱 בוט היכרויות לקשר קליל ולא מחייב לבני/בנות 18+.\n\n"
         "🇬🇧 A casual, no-strings-attached dating platform open to all adults (18+).\n\n"
         "בחר/י מגדר | *Select your gender:*",
         parse_mode="Markdown",
