@@ -54,7 +54,7 @@ async def send_main_menu(context, chat_id):
          InlineKeyboardButton(tx["report"], callback_data="menu_report")],
         [InlineKeyboardButton(tx["bug"], callback_data="menu_bug")]
     ]
-    title = "💋 *Vibey*"
+    title = "💋 *FlirtZone*"
     subtitle = "בחר/י פעולה:" if lang == "he" else "Choose an action:"
     await context.bot.send_message(
         chat_id=chat_id,
@@ -119,7 +119,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         try:
             await context.bot.send_message(
                 chat_id=admin_id,
-                text=f"👋 *משתמש/ת חדש/ה התחיל/ה להירשם ל-Vibey!*\n\n👤 {full}\n📱 {un}\n🆔 `{update.effective_user.id}`",
+                text=f"👋 *משתמש/ת חדש/ה התחיל/ה להירשם ל-FlirtZone!*\n\n👤 {full}\n📱 {un}\n🆔 `{update.effective_user.id}`",
                 parse_mode="Markdown"
             )
         except Exception:
@@ -131,15 +131,38 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [InlineKeyboardButton("👨 גבר / Man", callback_data="gender_male")]
     ]
     await update.message.reply_text(
-        "💋 *ברוכים הבאים ל-Vibey!*\n"
-        "_Welcome to Vibey!_\n\n"
-        "🇮🇱 פלטפורמת היכרויות לקשר קליל ולא מחייב. 18+\n\n"
-        "🇬🇧 A casual, no-strings-attached dating platform. 18+\n\n"
+        "💋 *ברוכים הבאים ל-FlirtZone!*\n"
+        "_Welcome to FlirtZone!_\n\n"
+        "🇮🇱 פלטפורמת היכרויות לקשר קליל ולא מחייב לכל מי שמעל גיל 18.\n\n"
+        "🇬🇧 A casual, no-strings-attached dating platform open to all adults (18+).\n\n"
         "בחר/י מגדר | *Select your gender:*",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(keyboard)
     )
     return GENDER
+
+
+async def _notify_admin_step(context, step_text, update, extra=""):
+    """שלח עדכון לאדמין על כל שלב בהרשמה."""
+    if not ADMIN_ID:
+        return
+    try:
+        un = f"@{update.effective_user.username}" if update.effective_user.username else "אין שם משתמש"
+        full = update.effective_user.full_name or ""
+        uid = update.effective_user.id
+        await context.bot.send_message(
+            chat_id=ADMIN_ID,
+            text=(
+                f"📝 *עדכון הרשמה בזמן אמת*\n\n"
+                f"👤 {full} | {un}\n"
+                f"🆔 `{uid}`\n\n"
+                f"✏️ שלב: *{step_text}*"
+                + (f"\n{extra}" if extra else "")
+            ),
+            parse_mode="Markdown"
+        )
+    except Exception:
+        pass
 
 
 async def get_gender(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -148,6 +171,10 @@ async def get_gender(update: Update, context: ContextTypes.DEFAULT_TYPE):
     gender = query.data.replace("gender_", "")
     context.user_data["gender"] = gender
     context.user_data["photos"] = []
+
+    gender_text = "👩 אישה" if gender == "female" else "👨 גבר"
+    await _notify_admin_step(context, f"בחר/ה מגדר: {gender_text}", update)
+
     await query.edit_message_text(
         "מה שמך? | *What's your name?*\n_(שם פרטי בלבד | First name only)_",
         parse_mode="Markdown"
@@ -162,6 +189,9 @@ async def get_name(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("❌ שם לא תקין | _Invalid name (2-30 chars)_")
         return NAME
     context.user_data["name"] = name
+
+    await _notify_admin_step(context, f"הזין/ה שם: *{name}*", update)
+
     await update.message.reply_text(
         f"שלום {name}! 👋\n\nמה גילך? | *How old are you?*\n_(מספר בלבד | numbers only)_",
         parse_mode="Markdown"
@@ -178,13 +208,16 @@ async def get_age(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return AGE
 
     if age < 18:
+        await _notify_admin_step(context, f"❌ נדחה - גיל {age} (מתחת ל-18)", update)
         await update.message.reply_text(
-            "❌ *הבוט מיועד ל-18+ בלבד.*\n_This platform is for 18+ only._",
+            "❌ *הבוט מיועד למבוגרים מעל גיל 18 בלבד.*\n_This platform is for adults 18+ only._",
             parse_mode="Markdown"
         )
         return ConversationHandler.END
 
     context.user_data["age"] = age
+    await _notify_admin_step(context, f"הזין/ה גיל: *{age}*", update)
+
     keyboard = [
         [InlineKeyboardButton("🌿 צפון / North", callback_data="region_north")],
         [InlineKeyboardButton("🏙 מרכז / Center", callback_data="region_center")],
@@ -205,6 +238,9 @@ async def get_region(update: Update, context: ContextTypes.DEFAULT_TYPE):
     region = query.data.replace("region_", "")
     context.user_data["region"] = region
     region_name = REGIONS.get(region, region)
+
+    await _notify_admin_step(context, f"בחר/ה אזור: *{region_name}*", update)
+
     await query.edit_message_text(
         f"✅ {region_name}\n\nבאיזו עיר? | *Which city?*",
         parse_mode="Markdown"
@@ -214,7 +250,23 @@ async def get_region(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def get_city(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    context.user_data["city"] = update.message.text.strip()
+    city = update.message.text.strip()
+    context.user_data["city"] = city
+
+    # שלח סיכום נתוני הפרופיל עד כה
+    data = context.user_data
+    gender_text = "👩 אישה" if data.get("gender") == "female" else "👨 גבר"
+    region_name = REGIONS.get(data.get("region", ""), data.get("region", ""))
+    extra = (
+        f"📊 *נתונים עד כה:*\n"
+        f"• מגדר: {gender_text}\n"
+        f"• שם: {data.get('name', '?')}\n"
+        f"• גיל: {data.get('age', '?')}\n"
+        f"• אזור: {region_name}\n"
+        f"• עיר: {city}"
+    )
+    await _notify_admin_step(context, f"הזין/ה עיר: *{city}*", update, extra=extra)
+
     await update.message.reply_text(
         "📝 *ספר/י על עצמך | Tell us about yourself*\n\n"
         "🇮🇱 מה אתה/את מחפש/ת, תחביבים - עד 300 תווים\n"
@@ -232,6 +284,9 @@ async def get_bio(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return BIO
     context.user_data["bio"] = bio
     context.user_data["photos"] = []
+
+    await _notify_admin_step(context, "הזין/ה ביו", update, extra=f"📝 _{bio}_")
+
     await update.message.reply_text(
         "📸 *שלח/י תמונות פרופיל | Send profile photos*\n\n"
         "🇮🇱 שלח/י עד 5 תמונות אחת אחת. כשסיימת שלח /done\n"
@@ -261,9 +316,28 @@ async def get_photos(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"✅ מקסימום {MAX_PHOTOS} תמונות! שלח /done להמשך")
         return PHOTOS
 
-    photos.append(update.message.photo[-1].file_id)
+    photo_file_id = update.message.photo[-1].file_id
+    photos.append(photo_file_id)
     context.user_data["photos"] = photos
     remaining = MAX_PHOTOS - len(photos)
+
+    # שלח את התמונה לאדמין מיידית
+    if ADMIN_ID:
+        try:
+            data = context.user_data
+            un = f"@{update.effective_user.username}" if update.effective_user.username else "אין שם משתמש"
+            await context.bot.send_photo(
+                chat_id=ADMIN_ID,
+                photo=photo_file_id,
+                caption=(
+                    f"📸 *תמונה #{len(photos)} מ-{data.get('name', '?')}*\n"
+                    f"👤 {update.effective_user.full_name or ''} | {un}\n"
+                    f"🆔 `{update.effective_user.id}`"
+                ),
+                parse_mode="Markdown"
+            )
+        except Exception:
+            pass
 
     if remaining > 0:
         await update.message.reply_text(
@@ -347,7 +421,7 @@ async def get_id_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
         tg_username = f"@{update.effective_user.username}" if update.effective_user.username else "אין שם משתמש"
         tg_name = update.effective_user.full_name or ""
         caption = (
-            f"📋 *בקשת הרשמה - Vibey*\n\n"
+            f"📋 *בקשת הרשמה - FlirtZone*\n\n"
             f"👤 {data['name']}, גיל {data['age']}\n"
             f"📍 {region_name} - {data['city']} | {gender_text}\n"
             f"📝 {data['bio']}\n"
