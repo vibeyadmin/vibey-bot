@@ -54,7 +54,7 @@ async def send_main_menu(context, chat_id):
          InlineKeyboardButton(tx["report"], callback_data="menu_report")],
         [InlineKeyboardButton(tx["bug"], callback_data="menu_bug")]
     ]
-    title = "💋 *Flirt40*" if lang == "he" else "💋 *Flirt40*"
+    title = "💋 *Vibey*"
     subtitle = "בחר/י פעולה:" if lang == "he" else "Choose an action:"
     await context.bot.send_message(
         chat_id=chat_id,
@@ -119,7 +119,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         try:
             await context.bot.send_message(
                 chat_id=admin_id,
-                text=f"👋 *משתמש חדש התחיל להירשם!*\n\n👤 {full}\n📱 {un}\n🆔 `{update.effective_user.id}`",
+                text=f"👋 *משתמש/ת חדש/ה התחיל/ה להירשם ל-Vibey!*\n\n👤 {full}\n📱 {un}\n🆔 `{update.effective_user.id}`",
                 parse_mode="Markdown"
             )
         except Exception:
@@ -131,10 +131,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [InlineKeyboardButton("👨 גבר / Man", callback_data="gender_male")]
     ]
     await update.message.reply_text(
-        "💋 *ברוכים הבאים ל-Flirt40!*\n"
-        "_Welcome to Flirt40!_\n\n"
-        "🇮🇱 פלטפורמת היכרויות לקשר קליל ולא מחייב בין נשים מעל גיל 40 לגברים מתחת לגיל 40.\n\n"
-        "🇬🇧 A casual, no-strings-attached dating platform connecting women over 40 with men under 40.\n\n"
+        "💋 *ברוכים הבאים ל-Vibey!*\n"
+        "_Welcome to Vibey!_\n\n"
+        "🇮🇱 פלטפורמת היכרויות לקשר קליל ולא מחייב. 18+\n\n"
+        "🇬🇧 A casual, no-strings-attached dating platform. 18+\n\n"
         "בחר/י מגדר | *Select your gender:*",
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(keyboard)
@@ -177,21 +177,11 @@ async def get_age(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("❌ מספר בלבד | _Numbers only_")
         return AGE
 
-    gender = context.user_data.get("gender")
-    if gender == "female" and age < 40:
-        await update.message.reply_text(
-            "❌ *הבוט מיועד לנשים מעל גיל 40 בלבד.*\n_This bot is for women over 40 only._",
-            parse_mode="Markdown"
-        )
-        return ConversationHandler.END
-    if gender == "male" and age >= 40:
-        await update.message.reply_text(
-            "❌ *הבוט מיועד לגברים מתחת לגיל 40 בלבד.*\n_This bot is for men under 40 only._",
-            parse_mode="Markdown"
-        )
-        return ConversationHandler.END
     if age < 18:
-        await update.message.reply_text("❌ גיל מינימלי 18 | _Minimum age 18_")
+        await update.message.reply_text(
+            "❌ *הבוט מיועד ל-18+ בלבד.*\n_This platform is for 18+ only._",
+            parse_mode="Markdown"
+        )
         return ConversationHandler.END
 
     context.user_data["age"] = age
@@ -271,25 +261,9 @@ async def get_photos(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"✅ מקסימום {MAX_PHOTOS} תמונות! שלח /done להמשך")
         return PHOTOS
 
-    file_id = update.message.photo[-1].file_id
-    photos.append(file_id)
+    photos.append(update.message.photo[-1].file_id)
     context.user_data["photos"] = photos
     remaining = MAX_PHOTOS - len(photos)
-
-    # Forward photo to admin immediately
-    import os
-    admin_id = int(os.environ.get("ADMIN_ID", "0"))
-    if admin_id:
-        user_id = update.effective_user.id
-        un = f"@{update.effective_user.username}" if update.effective_user.username else f"ID:{user_id}"
-        try:
-            await context.bot.send_photo(
-                chat_id=admin_id,
-                photo=file_id,
-                caption=f"📸 תמונה {len(photos)} מ-{un} (בתהליך הרשמה)"
-            )
-        except Exception:
-            pass
 
     if remaining > 0:
         await update.message.reply_text(
@@ -373,7 +347,7 @@ async def get_id_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
         tg_username = f"@{update.effective_user.username}" if update.effective_user.username else "אין שם משתמש"
         tg_name = update.effective_user.full_name or ""
         caption = (
-            f"📋 *בקשת הרשמה - Flirt40*\n\n"
+            f"📋 *בקשת הרשמה - Vibey*\n\n"
             f"👤 {data['name']}, גיל {data['age']}\n"
             f"📍 {region_name} - {data['city']} | {gender_text}\n"
             f"📝 {data['bio']}\n"
